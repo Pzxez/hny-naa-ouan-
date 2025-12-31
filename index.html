@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year 2026</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffe6e6; /* สีพื้นหลังชมพูอ่อน */
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- ส่วน Countdown --- */
+        #countdown-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 1s ease;
+        }
+
+        h1 { color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-size: 3rem; margin-bottom: 20px; }
+        #timer { font-size: 2.5rem; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 20px; border-radius: 15px; }
+        
+        #open-btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: #fff;
+            color: #ff758c;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none; /* ซ่อนไว้ก่อนจนกว่าจะถึงเวลา */
+            animation: pulse 2s infinite;
+        }
+
+        /* --- ส่วน Main Content --- */
+        #main-container {
+            position: relative;
+            width: 900px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* ซ่อนไว้ก่อน */
+            transition: opacity 1s ease;
+        }
+
+        /* โซนรูปภาพ (ซ้าย) */
+        .photo-gallery {
+            width: 50%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 1.5s ease;
+            z-index: 10;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .photo-item {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .final-message {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* โซนจดหมาย (ขวา/กลาง) */
+        .envelope-wrapper {
+            position: absolute;
+            transition: all 1.5s ease;
+            /* ตอนแรกให้อยู่ตรงกลาง */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: #ff758c;
+            position: relative;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .envelope:before { /* ฝาปิด */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #ff5e78;
+            transform-origin: top;
+            transition: transform 1s ease;
+            z-index: 5;
+        }
+
+        .envelope.open:before {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 270px;
+            height: 180px;
+            background: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            transition: transform 1s ease 0.5s, z-index 0s ease 0.5s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #444;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(-150px); /* ดันจดหมายขึ้น */
+            z-index: 6; /* ให้จดหมายมาอยู่หน้าสุด */
+            height: 350px; /* ยืดจดหมายให้อ่านง่าย */
+        }
+
+        /* Class สำหรับ State การเลื่อน */
+        .slide-layout .envelope-wrapper {
+            left: 70%; /* ย้ายจดหมายไปทางขวา */
+        }
+
+        .slide-layout .photo-gallery {
+            opacity: 1;
+            transform: translateX(40px); /* แสดงรูปภาพทางซ้าย */
+        }
+
+        /* Animation เล็กๆน้อยๆ */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="countdown-screen">
+        <h1>Waiting for 2026...</h1>
+        <div id="timer">00:00:00</div>
+        <button id="open-btn">✨ Open My Heart ✨</button>
+    </div>
+
+    <div id="main-container">
+        <div class="photo-gallery">
+            <div class="photo-grid">
+                <img src="https://via.placeholder.com/150/FFB6C1/808080?text=Photo+1" class="photo-item" id="p1">
+                <img src="https://via.placeholder.com/150/87CEFA/808080?text=Photo+2" class="photo-item" id="p2">
+                <img src="https://via.placeholder.com/150/FFD700/808080?text=Photo+3" class="photo-item" id="p3">
+            </div>
+            <div class="final-message">
+                <p><b>ขอบคุณนะที่อยู่ด้วยกันมา...</b></p>
+                <p>"ต้นปี 2025 เราเป็นแค่คนแปลกหน้า<br>แต่สิ้นปี 2025 เราได้อยู่ด้วยกัน<br>และเราจะอยู่ด้วยกันตลอดไปนะ"</p>
+                <p>❤️ รักนะคะ/ครับ ❤️</p>
+            </div>
+        </div>
+
+        <div class="envelope-wrapper">
+            <div class="envelope" id="envelope">
+                <div class="letter">
+                    <h2 style="color:#ff5e78; margin:0 0 10px 0;">Happy New Year 2026 🎉</h2>
+                    <p>สวัสดีปีใหม่นะคนเก่ง</p>
+                    <p>ปีที่ผ่านมามีเรื่องราวมากมาย<br>ขอบคุณที่ผ่านมันมาด้วยกัน</p>
+                    <p>ขอให้ปี 2026 นี้<br>เป็นปีที่ดีของเราสองคน<br>มีความสุขมากๆ นะ</p>
+                    <br>
+                    <small>(รอสักครู่นะ...)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. ตั้งค่าวันเวลาเคาท์ดาวน์ ---
+        // กำหนดเป็น 1 มกราคม 2026 เวลา 00:00:00
+        // ** ถ้าอยากเทสให้ดูผลลัพธ์เลย ให้เปลี่ยนปีเป็น 2024 หรือ 2025 (เวลาในอดีต) **
+        const targetDate = new Date("January 1, 2026 00:00:00").getTime();
+
+        const timerElem = document.getElementById("timer");
+        const openBtn = document.getElementById("open-btn");
+        const countdownScreen = document.getElementById("countdown-screen");
+        const mainContainer = document.getElementById("main-container");
+        const envelope = document.getElementById("envelope");
+        const body = document.body;
+
+        // ฟังก์ชันนับถอยหลัง
+        const countdown = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            // คำนวณวัน ชม. นาที วินาที
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // แสดงผล
+            if (distance > 0) {
+                timerElem.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                // ถึงเวลาแล้ว!
+                clearInterval(countdown);
+                timerElem.innerHTML = "Happy New Year 2026! 🎉";
+                openBtn.style.display = "block"; // ปุ่มเปิดปรากฏ
+            }
+        }, 1000);
+
+        // --- 2. ฟังก์ชันเมื่อกดเปิด ---
+        openBtn.addEventListener('click', () => {
+            // ซ่อนหน้า countdown
+            countdownScreen.style.opacity = '0';
+            setTimeout(() => {
+                countdownScreen.style.display = 'none';
+                mainContainer.style.opacity = '1'; // แสดงกล่องจดหมาย
+                
+                // เริ่มเปิดจดหมาย
+                setTimeout(() => {
+                    envelope.classList.add('open');
+                    
+                    // --- 3. เริ่ม Step เลื่อนจดหมายและโชว์รูป (หลังจากเปิดจดหมาย 4 วินาที) ---
+                    setTimeout(() => {
+                        body.classList.add('slide-layout'); // สั่งเลื่อน Layout
+
+                        // เอฟเฟกต์รูปค่อยๆ เด้งขึ้นมาทีละรูป
+                        setTimeout(() => { document.getElementById('p1').style.transform = 'scale(1)'; }, 1000);
+                        setTimeout(() => { document.getElementById('p2').style.transform = 'scale(1)'; }, 1500);
+                        setTimeout(() => { document.getElementById('p3').style.transform = 'scale(1)'; }, 2000);
+
+                    }, 4000); // รอ 4 วินาทีให้อ่านการ์ดก่อน แล้วค่อยเลื่อน
+
+                }, 500);
+            }, 1000);
+        });
+
+        // *** โหมดทดสอบ (Developer Mode) ***
+        // ถ้าคุณอยากเทสตอนนี้เลย โดยไม่ต้องรอปี 2026 ให้เอาเครื่องหมาย // หน้าบรรทัดด้านล่างออก
+        // targetDate = new Date().getTime() - 1000; 
+    </script>
+</body>
+</html>
