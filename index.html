@@ -2,21 +2,22 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy New Year 2026</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap');
+        /* นำเข้าฟอนต์ Prompt (แบบไม่มีหัว) */
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap');
 
         body {
             margin: 0;
             padding: 0;
-            background: #ffe6e6; /* สีพื้นหลังชมพูอ่อน */
-            font-family: 'Sarabun', sans-serif;
+            background: #ffe6e6;
+            font-family: 'Prompt', sans-serif; /* ใช้ฟอนต์ Prompt */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* ห้ามเลื่อนหน้าจอ */
         }
 
         /* --- ส่วน Countdown --- */
@@ -32,113 +33,120 @@
             justify-content: center;
             align-items: center;
             z-index: 999;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        h1 { color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-size: 3rem; margin-bottom: 20px; }
-        #timer { font-size: 2.5rem; color: #fff; font-weight: bold; background: rgba(255,255,255,0.2); padding: 20px; border-radius: 15px; }
+        h1 { color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); font-size: 2rem; margin-bottom: 20px; }
+        #timer { font-size: 2rem; color: #fff; font-weight: bold; background: rgba(255,255,255,0.25); padding: 15px 25px; border-radius: 15px; backdrop-filter: blur(5px); }
         
         #open-btn {
             margin-top: 30px;
-            padding: 15px 40px;
-            font-size: 1.5rem;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-family: 'Prompt', sans-serif;
             background: #fff;
             color: #ff758c;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: none; /* ซ่อนไว้ก่อนจนกว่าจะถึงเวลา */
+            display: none;
             animation: pulse 2s infinite;
         }
 
         /* --- ส่วน Main Content --- */
         #main-container {
             position: relative;
-            width: 900px;
-            height: 500px;
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            opacity: 0; /* ซ่อนไว้ก่อน */
+            opacity: 0;
             transition: opacity 1s ease;
         }
 
-        /* โซนรูปภาพ (ซ้าย) */
+        /* โซนรูปภาพ */
         .photo-gallery {
-            width: 50%;
-            height: 100%;
             position: absolute;
-            left: 0;
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: translateX(-50px);
             transition: all 1.5s ease;
             z-index: 10;
+            pointer-events: none; /* เพื่อไม่ให้บังการกดจดหมายตอนแรก */
         }
 
         .photo-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            justify-content: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .photo-item {
-            width: 140px;
-            height: 140px;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 10px;
-            border: 4px solid #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 3px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transform: scale(0);
-            transition: transform 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .final-message {
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
             color: #555;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             line-height: 1.6;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 80%;
+            margin-top: 10px;
         }
 
-        /* โซนจดหมาย (ขวา/กลาง) */
+        /* โซนจดหมาย */
         .envelope-wrapper {
             position: absolute;
             transition: all 1.5s ease;
-            /* ตอนแรกให้อยู่ตรงกลาง */
             left: 50%;
-            transform: translateX(-50%);
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
         }
 
         .envelope {
-            width: 300px;
-            height: 200px;
+            width: 280px;
+            height: 180px;
             background: #ff758c;
             position: relative;
             border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
 
-        .envelope:before { /* ฝาปิด */
+        .envelope:before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 0;
             height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
             border-top: 100px solid #ff5e78;
             transform-origin: top;
-            transition: transform 1s ease;
+            transition: transform 0.8s ease;
             z-index: 5;
         }
 
@@ -151,40 +159,59 @@
             position: absolute;
             top: 10px;
             left: 15px;
-            width: 270px;
-            height: 180px;
+            width: 250px;
+            height: 160px;
             background: #fff;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
             border-radius: 5px;
-            transition: transform 1s ease 0.5s, z-index 0s ease 0.5s;
+            transition: transform 1s ease 0.5s;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #444;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 2;
         }
 
         .envelope.open .letter {
-            transform: translateY(-150px); /* ดันจดหมายขึ้น */
-            z-index: 6; /* ให้จดหมายมาอยู่หน้าสุด */
-            height: 350px; /* ยืดจดหมายให้อ่านง่าย */
+            transform: translateY(-160px); /* ดันขึ้นข้างบน */
+            z-index: 6;
+            height: 320px; /* ยืดจดหมายให้อ่านง่าย */
         }
 
-        /* Class สำหรับ State การเลื่อน */
-        .slide-layout .envelope-wrapper {
-            left: 70%; /* ย้ายจดหมายไปทางขวา */
+        /* --- Animation Logic for Mobile vs Desktop --- */
+        
+        /* บนมือถือ (จอเล็ก) */
+        @media (max-width: 768px) {
+            .slide-layout .envelope-wrapper {
+                top: 85%; /* เลื่อนซองจดหมายลงไปข้างล่าง */
+                transform: translate(-50%, 0) scale(0.8); /* ย่อลงนิดนึง */
+                opacity: 0.5;
+            }
+            .slide-layout .photo-gallery {
+                opacity: 1;
+                top: 15%; /* แสดงรูปภาพด้านบน */
+                pointer-events: auto;
+            }
+            .photo-item { width: 90px; height: 90px; }
+            .letter { font-size: 0.9rem; }
         }
 
-        .slide-layout .photo-gallery {
-            opacity: 1;
-            transform: translateX(40px); /* แสดงรูปภาพทางซ้าย */
+        /* บนคอม (จอใหญ่) */
+        @media (min-width: 769px) {
+            .slide-layout .envelope-wrapper {
+                left: 75%; /* เลื่อนไปขวา */
+            }
+            .slide-layout .photo-gallery {
+                opacity: 1;
+                left: 15%; /* แสดงรูปด้านซ้าย */
+                pointer-events: auto;
+            }
         }
 
-        /* Animation เล็กๆน้อยๆ */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -204,36 +231,40 @@
     <div id="main-container">
         <div class="photo-gallery">
             <div class="photo-grid">
-                <img src="https://via.placeholder.com/150/FFB6C1/808080?text=Photo+1" class="photo-item" id="p1">
-                <img src="https://via.placeholder.com/150/87CEFA/808080?text=Photo+2" class="photo-item" id="p2">
-                <img src="https://via.placeholder.com/150/FFD700/808080?text=Photo+3" class="photo-item" id="p3">
+                <img src="photo1.jpg" class="photo-item" id="p1">
+                <img src="photo2.jpg" class="photo-item" id="p2">
+                <img src="photo3.jpg" class="photo-item" id="p3">
             </div>
             <div class="final-message">
                 <p><b>ขอบคุณนะที่อยู่ด้วยกันมา...</b></p>
                 <p>"ต้นปี 2025 เราเป็นแค่คนแปลกหน้า<br>แต่สิ้นปี 2025 เราได้อยู่ด้วยกัน<br>และเราจะอยู่ด้วยกันตลอดไปนะ"</p>
-                <p>❤️ รักนะคะ/ครับ ❤️</p>
+                <p style="color: #ff5e78; font-weight: bold; margin-top: 10px;">❤️ รักนะคะ/ครับ ❤️</p>
             </div>
         </div>
 
         <div class="envelope-wrapper">
             <div class="envelope" id="envelope">
                 <div class="letter">
-                    <h2 style="color:#ff5e78; margin:0 0 10px 0;">Happy New Year 2026 🎉</h2>
+                    <h2 style="color:#ff5e78; margin:0 0 15px 0;">Happy New Year 2026 🎉</h2>
                     <p>สวัสดีปีใหม่นะคนเก่ง</p>
                     <p>ปีที่ผ่านมามีเรื่องราวมากมาย<br>ขอบคุณที่ผ่านมันมาด้วยกัน</p>
                     <p>ขอให้ปี 2026 นี้<br>เป็นปีที่ดีของเราสองคน<br>มีความสุขมากๆ นะ</p>
                     <br>
-                    <small>(รอสักครู่นะ...)</small>
+                    <small style="color:#999;">(รอแป๊บนึงนะ...)</small>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 1. ตั้งค่าวันเวลาเคาท์ดาวน์ ---
-        // กำหนดเป็น 1 มกราคม 2026 เวลา 00:00:00
-        // ** ถ้าอยากเทสให้ดูผลลัพธ์เลย ให้เปลี่ยนปีเป็น 2024 หรือ 2025 (เวลาในอดีต) **
-        const targetDate = new Date("January 1, 2026 00:00:00").getTime();
+        // --- ส่วนตั้งค่าวันที่ ---
+        
+        // ** โหมดทดสอบ (เปิดใช้งานอยู่): ตั้งเวลาเป็นเวลาปัจจุบันลบ 1 วินาที (เพื่อให้ปุ่มขึ้นเลย) **
+        const targetDate = new Date().getTime() - 1000; 
+
+        // ** ถ้าจะใช้จริง ให้ลบบรรทัดบนทิ้ง แล้วเอาคอมเมนต์บรรทัดล่างออก **
+        // const targetDate = new Date("January 1, 2026 00:00:00").getTime();
+
 
         const timerElem = document.getElementById("timer");
         const openBtn = document.getElementById("open-btn");
@@ -242,58 +273,47 @@
         const envelope = document.getElementById("envelope");
         const body = document.body;
 
-        // ฟังก์ชันนับถอยหลัง
         const countdown = setInterval(() => {
             const now = new Date().getTime();
             const distance = targetDate - now;
 
-            // คำนวณวัน ชม. นาที วินาที
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // แสดงผล
             if (distance > 0) {
                 timerElem.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
             } else {
-                // ถึงเวลาแล้ว!
                 clearInterval(countdown);
                 timerElem.innerHTML = "Happy New Year 2026! 🎉";
-                openBtn.style.display = "block"; // ปุ่มเปิดปรากฏ
+                openBtn.style.display = "block";
             }
         }, 1000);
 
-        // --- 2. ฟังก์ชันเมื่อกดเปิด ---
         openBtn.addEventListener('click', () => {
-            // ซ่อนหน้า countdown
             countdownScreen.style.opacity = '0';
             setTimeout(() => {
                 countdownScreen.style.display = 'none';
-                mainContainer.style.opacity = '1'; // แสดงกล่องจดหมาย
+                mainContainer.style.opacity = '1';
                 
-                // เริ่มเปิดจดหมาย
                 setTimeout(() => {
                     envelope.classList.add('open');
                     
-                    // --- 3. เริ่ม Step เลื่อนจดหมายและโชว์รูป (หลังจากเปิดจดหมาย 4 วินาที) ---
+                    // รอ 5 วินาทีหลังจากจดหมายเปิด (เพื่อให้แฟนอ่านจบก่อน)
                     setTimeout(() => {
-                        body.classList.add('slide-layout'); // สั่งเลื่อน Layout
+                        body.classList.add('slide-layout'); // เริ่ม Animation เลื่อน
 
-                        // เอฟเฟกต์รูปค่อยๆ เด้งขึ้นมาทีละรูป
-                        setTimeout(() => { document.getElementById('p1').style.transform = 'scale(1)'; }, 1000);
-                        setTimeout(() => { document.getElementById('p2').style.transform = 'scale(1)'; }, 1500);
+                        // รูปเด้งขึ้นมาทีละรูป
+                        setTimeout(() => { document.getElementById('p1').style.transform = 'scale(1)'; }, 800);
+                        setTimeout(() => { document.getElementById('p2').style.transform = 'scale(1)'; }, 1400);
                         setTimeout(() => { document.getElementById('p3').style.transform = 'scale(1)'; }, 2000);
 
-                    }, 4000); // รอ 4 วินาทีให้อ่านการ์ดก่อน แล้วค่อยเลื่อน
+                    }, 5000); 
 
                 }, 500);
-            }, 1000);
+            }, 800);
         });
-
-        // *** โหมดทดสอบ (Developer Mode) ***
-        // ถ้าคุณอยากเทสตอนนี้เลย โดยไม่ต้องรอปี 2026 ให้เอาเครื่องหมาย // หน้าบรรทัดด้านล่างออก
-        // targetDate = new Date().getTime() - 1000; 
     </script>
 </body>
 </html>
